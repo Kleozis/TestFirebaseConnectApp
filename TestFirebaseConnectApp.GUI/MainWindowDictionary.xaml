@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TestFirebaseConnectApp.GUI"
+                    xmlns:vm="clr-namespace:TestFirebaseConnectApp.GUI.ViewModels"
+                    xmlns:vw="clr-namespace:TestFirebaseConnectApp.GUI.Views">
+    <DataTemplate DataType="{x:Type vm:RegisterNewAccountViewModel}">
+        <vw:RegisterNewАccountView DataContext="{Binding}"/>
+    </DataTemplate>    
+</ResourceDictionary>

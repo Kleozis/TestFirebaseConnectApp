@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TestFirebaseConnectApp.GUI.ViewModels;
 
 namespace TestFirebaseConnectApp.GUI
 {
@@ -16,6 +17,10 @@ namespace TestFirebaseConnectApp.GUI
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            var main = new MainWindow();
+            main.DataContext = new RegisterNewAccountViewModel();
+
+            main.Show();
         }
     }
 }
