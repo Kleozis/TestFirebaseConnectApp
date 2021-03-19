@@ -7,23 +7,32 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
 {
     public class RegisterNewAccountViewModel
     {
-        private IFirebaseAuthProvider _authProvider;
+        private readonly IFirebaseAuthProvider _authProvider;
 
-        private RelayCommand registerNewAccountCommand;
+        private readonly IWorkspaceMediator _mediator;
+
+        public RegisterNewAccountViewModel(IWorkspaceMediator mediator, IFirebaseAuthProvider provider)
+        {           
+            _mediator = mediator;
+            _authProvider = provider;
+        }
+
+        private RelayCommand _registerNewAccountCommand;
         public RelayCommand RegisterNewAccountCommand =>
-            registerNewAccountCommand ??= new RelayCommand(async o => 
+            _registerNewAccountCommand ??= new RelayCommand(async o => 
             {
-                System.Diagnostics.Debug.WriteLine("RegisterNewAccountCommand");
-                // создать нового пользователя
+                (string email, string password) = (ValueTuple<string, string>)o;
+                var auth = await _authProvider.CreateUserWithEmailAndPasswordAsync(email, password);
+                _ = auth.User;
+                _mediator.Notify(this, "register");
             });
 
 
-        private RelayCommand goToLoginViewCommand;
+        private RelayCommand _goToLoginViewCommand;
         public RelayCommand GoToLoginViewCommand =>
-            goToLoginViewCommand ??= new RelayCommand(o => 
+            _goToLoginViewCommand ??= new RelayCommand(o => 
             {
-                System.Diagnostics.Debug.WriteLine("GoToLoginViewCommand");
-                // переключить RegisterNewAccountViewModel на LoginViewModel
+                _mediator.Notify(this, "goLogin");
             });
     }
 }
