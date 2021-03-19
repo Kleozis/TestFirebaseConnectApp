@@ -5,8 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:TestFirebaseConnectApp.GUI.Views"
+             xmlns:global="clr-namespace:TestFirebaseConnectApp.GUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:Background="White">
+    <UserControl.Resources>
+        <global:RegisterDataUserConverter x:Key="RegisterDataUserConverter"/>
+    </UserControl.Resources>
     <Grid VerticalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -57,23 +61,34 @@
                     </Style.Triggers>
                 </Style>
                 <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource ControlsStyle}">
-                    <Setter Property="Background" Value="Transparent"/>
-                    
+                    <Setter Property="Background" Value="White"/>
+                    <Style.Triggers>
+                        <Trigger Property="global:PasswordBoxExtension.IsPasswordEmpty" Value="True">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ControlsStyle}"/>
             </Grid.Resources>
 
             <Label Grid.Row="0" Content="Почта"/>
-            <TextBox Grid.Row="0"/>
+            <TextBox x:Name="LoginTextBox" Grid.Row="0"/>
 
             <Label Grid.Row="1" Content="Пароль"/>
-            <PasswordBox Grid.Row="1"/>
+            <PasswordBox x:Name="PasswordBox" global:PasswordBoxExtension.BindPassword="True" Grid.Row="1"/>
 
             <Label Grid.Row="2" Content="Подтвердите пароль"/>
-            <PasswordBox Grid.Row="2"/>
+            <PasswordBox global:PasswordBoxExtension.BindPassword="True" Grid.Row="2"/>
 
-            <Button Grid.Row="3" Content="Зарегистрироваться" Command="{Binding Path=RegisterNewAccountCommand}"/>
-            
+            <Button Grid.Row="3" Content="Зарегистрироваться" Command="{Binding Path=RegisterNewAccountCommand}">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource RegisterDataUserConverter}">
+                        <Binding ElementName="LoginTextBox" Path="Text"/>
+                        <Binding ElementName="PasswordBox" Path="(global:PasswordBoxExtension.ExtractedPassword)"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+
             <TextBlock Grid.Row="4" HorizontalAlignment="Center">
                 <Run Text="Уже зарегистрированы?"/>
                 <Hyperlink Command="{Binding Path=GoToLoginViewCommand}">
