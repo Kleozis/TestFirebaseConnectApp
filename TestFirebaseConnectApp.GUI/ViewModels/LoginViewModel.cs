@@ -16,6 +16,8 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             {
                 (string email, string password) = (ValueTuple<string, string>)o;
                 var auth = await _authProvider.SignInWithEmailAndPasswordAsync(email, password);
+
+                _mediator.FirebaseAuth = auth;
                 _mediator.Notify(this, "login");
             });
 

@@ -48,7 +48,7 @@ namespace TestFirebaseConnectApp.GUI
 
         private void SetUserInfoViewModel()
         {
-
+            _window.DataContext = new UserInfoViewModel(this, _authProvider);
         }
 
         private void SetRestorePasswordViewModel()
