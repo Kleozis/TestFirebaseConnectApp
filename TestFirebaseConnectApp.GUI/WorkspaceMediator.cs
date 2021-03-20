@@ -34,6 +34,8 @@ namespace TestFirebaseConnectApp.GUI
             _mediatorMethods.GetValueOrDefault(key, null)?.Invoke();
         }
 
+        public FirebaseAuth FirebaseAuth { get; set; }
+
         private void SetRegisterViewModel()
         {
             _window.DataContext = new RegisterNewAccountViewModel(this, _authProvider);
