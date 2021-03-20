@@ -1,11 +1,13 @@
 ﻿using Firebase.Auth;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace TestFirebaseConnectApp.GUI.ViewModels
 {
-    public abstract class BaseWorkspace
+    public abstract class BaseWorkspace : INotifyPropertyChanged
     {
         protected readonly IFirebaseAuthProvider _authProvider;
 
@@ -16,5 +18,13 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             _mediator = mediator;
             _authProvider = provider;
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
     }
 }

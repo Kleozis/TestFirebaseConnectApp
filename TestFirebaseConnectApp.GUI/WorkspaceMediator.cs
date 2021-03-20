@@ -25,7 +25,9 @@ namespace TestFirebaseConnectApp.GUI
                 { "register", SetUserInfoViewModel },
                 { "goLogin", SetLoginViewModel },
                 { "login", SetUserInfoViewModel },
-                { "goRestorePassword", SetRestorePasswordViewModel }
+                { "goRestorePassword", SetRestorePasswordViewModel },
+                { "exit", ExitFromAccount },
+                { "delete", ExitFromAccount }
             };
         }
 
@@ -54,6 +56,12 @@ namespace TestFirebaseConnectApp.GUI
         private void SetRestorePasswordViewModel()
         {
             _window.DataContext = new RestorePasswordViewModel(this, _authProvider);
+        }
+
+        private void ExitFromAccount()
+        {
+            FirebaseAuth = null;
+            SetLoginViewModel();
         }
     }
 }
