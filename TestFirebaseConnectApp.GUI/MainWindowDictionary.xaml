@@ -5,5 +5,8 @@
                     xmlns:vw="clr-namespace:TestFirebaseConnectApp.GUI.Views">
     <DataTemplate DataType="{x:Type vm:RegisterNewAccountViewModel}">
         <vw:RegisterNewАccountView DataContext="{Binding}"/>
-    </DataTemplate>    
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+        <vw:LoginView DataContext="{Binding}"/>
+    </DataTemplate>
 </ResourceDictionary>
