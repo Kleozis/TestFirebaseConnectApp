@@ -9,4 +9,7 @@
     <DataTemplate DataType="{x:Type vm:LoginViewModel}">
         <vw:LoginView DataContext="{Binding}"/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:RestorePasswordViewModel}">
+        <vw:RestorePasswordView DataContext="{Binding}"/>
+    </DataTemplate>
 </ResourceDictionary>
