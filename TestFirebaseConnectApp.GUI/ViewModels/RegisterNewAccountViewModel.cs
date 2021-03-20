@@ -5,17 +5,10 @@ using System.Text;
 
 namespace TestFirebaseConnectApp.GUI.ViewModels
 {
-    public class RegisterNewAccountViewModel
+    public class RegisterNewAccountViewModel : BaseWorkspace
     {
-        private readonly IFirebaseAuthProvider _authProvider;
-
-        private readonly IWorkspaceMediator _mediator;
-
         public RegisterNewAccountViewModel(IWorkspaceMediator mediator, IFirebaseAuthProvider provider)
-        {           
-            _mediator = mediator;
-            _authProvider = provider;
-        }
+            : base(mediator, provider) { }
 
         private RelayCommand _registerNewAccountCommand;
         public RelayCommand RegisterNewAccountCommand =>

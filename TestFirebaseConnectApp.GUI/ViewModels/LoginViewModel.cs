@@ -5,17 +5,10 @@ using System.Text;
 
 namespace TestFirebaseConnectApp.GUI.ViewModels
 {
-    public class LoginViewModel
+    public class LoginViewModel : BaseWorkspace
     {
-        private readonly IFirebaseAuthProvider _authProvider;
-
-        private readonly IWorkspaceMediator _mediator;
-
         public LoginViewModel(IWorkspaceMediator mediator, IFirebaseAuthProvider provider)
-        {
-            _mediator = mediator;
-            _authProvider = provider;
-        }
+            : base(mediator, provider) { }
 
         private RelayCommand _loginCommand;
         public RelayCommand LoginCommand =>
