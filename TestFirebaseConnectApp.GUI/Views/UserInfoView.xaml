@@ -5,12 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TestFirebaseConnectApp.GUI.Views"
              xmlns:global="clr-namespace:TestFirebaseConnectApp.GUI"
-             xmlns:converter="clr-namespace:TestFirebaseConnectApp.GUI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:Background="White">
-    <UserControl.Resources>
-        <converter:ChangePasswordDataToUserInputInfoConverter x:Key="PasswordsToUserConverter"/>
-    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -29,54 +25,48 @@
 
         <GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,10,10"
                   Header="Информация об аккаунте">
-            <GroupBox.Resources>
-                <Style TargetType="{x:Type TextBox}">
-                    <Setter Property="Margin" Value="0,0,0,10"/>
-                </Style>
-                <Style TargetType="{x:Type CheckBox}">
-                    <Setter Property="BorderBrush" Value="Transparent"/>
-                </Style>
-            </GroupBox.Resources>
             <StackPanel>
                 <TextBlock Text="Имя"/>
-                <TextBox Text="{Binding Path=User.FirstName}"/>
+                <TextBox Style="{StaticResource InformationTextBox}"
+                         Text="{Binding Path=User.FirstName}"/>
                 
                 <TextBlock Text="Фамилия"/>
-                <TextBox Text="{Binding Path=User.LastName}"/>
+                <TextBox Style="{StaticResource InformationTextBox}"
+                         Text="{Binding Path=User.LastName}"/>
                
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Почта" Margin="0,0,10,0"/>
-                    <CheckBox IsChecked="{Binding Path=User.IsEmailVerified}"/>
+                    <CheckBox Style="{StaticResource VerifiedEmailCheckBox}" 
+                              IsChecked="{Binding Path=User.IsEmailVerified}"/>
                 </StackPanel>
-                <TextBox Text="{Binding Path=User.Email}"/>
+                <TextBox Style="{StaticResource InformationTextBox}"
+                         Text="{Binding Path=User.Email}"/>
 
                 <TextBlock Text="Телефон"/>
-                <TextBox Text="{Binding Path=User.PhoneNumber}"/>
+                <TextBox Style="{StaticResource InformationTextBox}"
+                         Text="{Binding Path=User.PhoneNumber}"/>
             </StackPanel>
         </GroupBox>
-        
+
         <StackPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="10">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Height" Value="20"/>
-                    <Setter Property="Width" Value="150"/>
-                    <Setter Property="Margin" Value="0,0,0,10"/>
-                </Style>
-                <Style x:Key="DangerButton" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                    <Setter Property="Background" Value="#FFFF9494"/>
-                    <Setter Property="BorderBrush" Value="DarkRed"/>
-                    <Setter Property="Foreground" Value="DarkRed"/>
-                </Style>
-            </StackPanel.Resources>
-            <Button Content="Сменить пароль" Command="{Binding Path=OpenChangePasswordPopupCommand}"/>
-            <Button Content="Выйти" Command="{Binding Path=ExitFromAccountCommand}"/>
-            <Button Content="Удалить аккаунт" Command="{Binding Path=OpenDeleteAccountPopupCommand}"
-                    Style="{StaticResource DangerButton}"/>
+
+            <Button Style="{StaticResource UserInfoMenuButton}"
+                    Content="Сменить пароль" 
+                    Command="{Binding Path=OpenChangePasswordPopupCommand}"/>
+            
+            <Button Style="{StaticResource UserInfoMenuButton}"
+                    Content="Выйти" 
+                    Command="{Binding Path=ExitFromAccountCommand}"/>
+
+            <Button Style="{StaticResource DangerButton}"
+                    Content="Удалить аккаунт" 
+                    Command="{Binding Path=OpenDeleteAccountPopupCommand}"/>
         </StackPanel>
 
         <!-- change password popup -->
         <Popup IsOpen="{Binding Path=ChangePasswordPopupState}" Placement="Center">
-            <Border Padding="10" Background="White" BorderThickness="1" BorderBrush="Gray">
+            <Border Padding="10" BorderThickness="1" 
+                    BorderBrush="Gray" Background="White" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -88,43 +78,20 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Grid.Resources>
-                        <Style x:Key="GridElementsStyle" TargetType="{x:Type FrameworkElement}">
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                        <Style x:Key="ControlsStyle" TargetType="{x:Type Control}" BasedOn="{StaticResource GridElementsStyle}">
-                            <Setter Property="Height" Value="20"/>
-                        </Style>
-                        <Style TargetType="{x:Type Label}" BasedOn="{StaticResource GridElementsStyle}">
-                            <Setter Property="FontStyle" Value="Italic"/>
-                            <Setter Property="Foreground">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="Black" Opacity="0.5"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource ControlsStyle}">
-                            <Setter Property="Background" Value="White"/>
-                            <Style.Triggers>
-                                <Trigger Property="global:PasswordBoxExtension.IsPasswordEmpty" Value="True">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ControlsStyle}">
-                            <Setter Property="Width" Value="90"/>
-                        </Style>
-                    </Grid.Resources>
 
-                    <TextBlock Text="Изменение пароля" Grid.ColumnSpan="2"/>
+                    <TextBlock Grid.ColumnSpan="2"
+                               Text="Изменение пароля" />
 
-                    <Label Grid.Row="1" Grid.ColumnSpan="2" Content="Новый пароль"/>
-                    <PasswordBox x:Name="PasswordBox" global:PasswordBoxExtension.BindPassword="True" Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="1" Grid.ColumnSpan="2" 
+                           Content="Новый пароль"/>
+                    <PasswordBox x:Name="PasswordBox" Grid.Row="1" Grid.ColumnSpan="2"/>
 
-                    <Label Grid.Row="2" Grid.ColumnSpan="2" Content="Подтвердите пароль"/>
-                    <PasswordBox x:Name="ConfirmPasswordBox" global:PasswordBoxExtension.BindPassword="True" Grid.Row="2" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="2" Grid.ColumnSpan="2" 
+                           Content="Подтвердите пароль"/>
+                    <PasswordBox x:Name="ConfirmPasswordBox" Grid.Row="2" Grid.ColumnSpan="2"/>
 
-                    <Button Grid.Row="3" Grid.Column="0" Margin="0,0,5,0" Content="Подтвердить"
+                    <Button Grid.Row="3" Grid.Column="0" Margin="0,0,5,0" Width="90"
+                            Content="Подтвердить"  
                             Command="{Binding Path=ConfirmChangePasswordCommand}">
                         <Button.CommandParameter>
                             <MultiBinding Converter="{StaticResource PasswordsToUserConverter}">
@@ -133,7 +100,9 @@
                             </MultiBinding>
                         </Button.CommandParameter>
                     </Button>
-                    <Button Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Content="Отмена"
+
+                    <Button Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Width="90"
+                            Content="Отмена" 
                             Command="{Binding Path=CancelChangePasswordCommand}"/>
                 </Grid>
             </Border>
@@ -141,8 +110,8 @@
         
         <!-- confirm delete account popup -->
         <Popup IsOpen="{Binding Path=ConfirmDeleteAccountPopupState}" Placement="Center">
-            <Border Padding="10" Background="White" BorderThickness="1" BorderBrush="Gray"
-                Grid.ColumnSpan="2" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border Padding="10" BorderThickness="1" 
+                    BorderBrush="Gray" Background="White" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -158,9 +127,11 @@
                         <LineBreak/>
                         <Run Text="Это действие нельзя отменить."/>
                     </TextBlock>
-                    <Button Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" Content="Подтвердить"
+                    <Button Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" 
+                            Content="Подтвердить"
                             Command="{Binding Path=ConfirmDeleteAccountCommand}"/>
-                    <Button Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" Content="Отмена"
+                    <Button Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" 
+                            Content="Отмена"
                             Command="{Binding Path=CancelDeleteAccountCommand}"/>
                 </Grid>
             </Border>
@@ -169,7 +140,8 @@
         <!-- info popup -->
         <Popup Placement="Center" StaysOpen="False" Grid.RowSpan="2"
                IsOpen="{Binding Path=MessagePopupState}">
-            <Border Padding="5" Background="White" BorderBrush="Gray" BorderThickness="1">
+            <Border Padding="10" BorderThickness="1" 
+                    BorderBrush="Gray" Background="White" >
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
