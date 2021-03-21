@@ -8,15 +8,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:Background="White">
     <UserControl.Resources>
-        <global:RegisterDataUserConverter x:Key="RegisterDataUserConverter"/>
+        <global:LoginDataUserConverter x:Key="LoginDataUserConverter"/>
     </UserControl.Resources>
-    <Grid VerticalAlignment="Center">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" VerticalAlignment="Bottom">
             <!-- logo -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -27,7 +27,7 @@
                        Text="Авторизация пользователя"/>
         </Grid>
 
-        <Grid Grid.Row="1" Width="200" HorizontalAlignment="Center">
+        <Grid Grid.Row="1" Width="200" HorizontalAlignment="Center" VerticalAlignment="Top">
             <!-- authorization's form -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
@@ -78,7 +78,7 @@
 
             <Button Grid.Row="2" Content="Войти" Command="{Binding Path=LoginCommand}">
                 <Button.CommandParameter>
-                    <MultiBinding Converter="{StaticResource RegisterDataUserConverter}">
+                    <MultiBinding Converter="{StaticResource LoginDataUserConverter}">
                         <Binding ElementName="LoginTextBox" Path="Text"/>
                         <Binding ElementName="PasswordBox" Path="(global:PasswordBoxExtension.ExtractedPassword)"/>
                     </MultiBinding>
@@ -98,5 +98,28 @@
                 </Hyperlink>
             </TextBlock>
         </Grid>
+
+        <!-- error validation popup -->
+        <Popup Placement="Center" StaysOpen="False" Grid.RowSpan="2"
+               IsOpen="{Binding Path=ErrorMessagePopupState}">
+            <Border Padding="5" Background="White" BorderBrush="Gray" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="3" 
+                               Text="{Binding Path=ErrorMessageText}"/>
+                    <Button Grid.Row="1" Grid.Column="1" 
+                            Content="Закрыть"
+                            Command="{Binding Path=CloseErrorPopupCommand}"/>
+                </Grid>
+            </Border>
+        </Popup>
     </Grid>
 </UserControl>

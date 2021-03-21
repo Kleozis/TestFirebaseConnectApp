@@ -15,10 +15,43 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             _loginCommand ??= new RelayCommand(async o => 
             {
                 (string email, string password) = (ValueTuple<string, string>)o;
-                var auth = await _authProvider.SignInWithEmailAndPasswordAsync(email, password);
 
-                _mediator.FirebaseAuth = auth;
-                _mediator.Notify(this, "login");
+                var errorText = string.Empty;
+                if (!EmailValidator.Validate(email, ref errorText))
+                {
+                    ErrorMessageText = errorText;
+                    ErrorMessagePopupState = true;
+                    return;
+                }
+
+                if (!PasswordValidator.Validate(password, ref errorText))
+                {
+                    ErrorMessageText = errorText;
+                    ErrorMessagePopupState = true;
+                    return;
+                }
+
+                try
+                {
+                    var auth = await _authProvider.SignInWithEmailAndPasswordAsync(email, password);
+                    _mediator.FirebaseAuth = auth;
+                    _mediator.Notify(this, "login");
+                }
+                catch (FirebaseAuthException fae) when (fae.Reason == AuthErrorReason.UnknownEmailAddress)
+                {
+                    ErrorMessageText = "Пользователь с такой почтой не найден.";
+                    ErrorMessagePopupState = true;
+                }
+                catch (FirebaseAuthException fae) when (fae.Reason == AuthErrorReason.WrongPassword)
+                {
+                    ErrorMessageText = "Неверный пароль.";
+                    ErrorMessagePopupState = true;
+                }
+                catch (FirebaseAuthException fae) when (fae.Reason == AuthErrorReason.TooManyAttemptsTryLater)
+                {
+                    ErrorMessageText = "Слишком много попыток входа, попробуйте позже.";
+                    ErrorMessagePopupState = true;
+                }
             });
 
         private RelayCommand _goToRestorePasswordViewCommand;
@@ -34,5 +67,37 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             {
                 _mediator.Notify(this, "goRegister");
             });
+
+        #region error popup
+        private bool _errorMessagePopupState;
+        public bool ErrorMessagePopupState
+        {
+            get => _errorMessagePopupState;
+            set
+            {
+                _errorMessagePopupState = value;
+                OnPropertyChanged("ErrorMessagePopupState");
+            }
+        }
+
+        private string _errorMessageText;
+        public string ErrorMessageText
+        {
+            get => _errorMessageText;
+            set
+            {
+                _errorMessageText = value;
+                OnPropertyChanged("ErrorMessageText");
+            }
+        }
+
+        private RelayCommand _closeErrorPopupCommand;
+        public RelayCommand CloseErrorPopupCommand =>
+            _closeErrorPopupCommand ??= new RelayCommand(o =>
+            {
+                ErrorMessagePopupState = false;
+                OnPropertyChanged("ErrorMessagePopupState");
+            });
+        #endregion
     }
 }

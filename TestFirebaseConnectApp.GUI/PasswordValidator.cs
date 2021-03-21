@@ -18,5 +18,16 @@
 
             return true;
         }
+
+        public static bool Validate(string password, ref string errorText)
+        {
+            if (password.Length == 0)
+            {
+                errorText = "Пароль не введен.";
+                return false;
+            }
+
+            return true;
+        }
     }
 }
