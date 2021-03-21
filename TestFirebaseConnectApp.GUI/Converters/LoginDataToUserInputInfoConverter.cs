@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace TestFirebaseConnectApp.GUI
+namespace TestFirebaseConnectApp.GUI.Converters
 {
-    public class LoginDataUserConverter : IMultiValueConverter
+    public class LoginDataToUserInputInfoConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {

@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 
-namespace TestFirebaseConnectApp.GUI
+namespace TestFirebaseConnectApp.GUI.Converters
 {
-    public class RegisterDataUserConverter : IMultiValueConverter
+    public class RegisterDataToUserInputInfoConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         { 
