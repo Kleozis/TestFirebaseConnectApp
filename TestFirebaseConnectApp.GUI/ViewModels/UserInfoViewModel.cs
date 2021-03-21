@@ -17,26 +17,50 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
         public FirebaseUser User => _mediator.FirebaseAuth.User;
 
         #region change password popup
-        public bool ChangePasswordPopupState { get; set; }
+        public bool _changePasswordPopupState;
+        public bool ChangePasswordPopupState 
+        { 
+            get => _changePasswordPopupState;
+            set
+            {
+                _changePasswordPopupState = value;
+                OnPropertyChanged("ChangePasswordPopupState");
+            }
+        }
 
         private RelayCommand _openChangePasswordPopupCommand;
         public RelayCommand OpenChangePasswordPopupCommand =>
             _openChangePasswordPopupCommand ??= new RelayCommand(o =>
             {
                 ChangePasswordPopupState = true;
-                OnPropertyChanged("ChangePasswordPopupState");
             });
 
         private RelayCommand _confirmChangePasswordCommand;
         public RelayCommand ConfirmChangePasswordCommand => 
-            _confirmChangePasswordCommand ??= new RelayCommand(o =>
+            _confirmChangePasswordCommand ??= new RelayCommand(async o =>
             {
-                var password = (string)o;
-                var token = _mediator.FirebaseAuth.FirebaseToken;
-                _authProvider.ChangeUserPasswordAsync(token, password);
+                var uii = (UserInputInfo)o;
 
-                ChangePasswordPopupState = false;
-                OnPropertyChanged("ChangePasswordPopupState");
+                var errorText = string.Empty;
+                if (!PasswordValidator.Validate(uii.Password, uii.ConfirmPassword, ref errorText))
+                {
+                    MessagePopupText = errorText;
+                    MessagePopupState = true;
+                    return;
+                }
+
+                var token = _mediator.FirebaseAuth.FirebaseToken;
+                try
+                {
+                    await _authProvider.ChangeUserPasswordAsync(token, uii.Password);
+                    ChangePasswordPopupState = false;
+                    _mediator.Notify(this, "goLogin");
+                }
+                catch (FirebaseAuthException fae) when (fae.Reason == AuthErrorReason.WeakPassword)
+                {
+                    MessagePopupText = "Пароль слишком короткий.";
+                    MessagePopupState = true;
+                }
             });
 
         private RelayCommand _cancelChangePasswordCommand;
@@ -44,19 +68,26 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             _cancelChangePasswordCommand ??= new RelayCommand(o =>
             {
                 ChangePasswordPopupState = false;
-                OnPropertyChanged("ChangePasswordPopupState");
             });
         #endregion
 
         #region delete account popup
-        public bool ConfirmDeleteAccountPopupState { get; set; }
+        public bool _confirmDeleteAccountPopupState;
+        public bool ConfirmDeleteAccountPopupState 
+        { 
+            get => _confirmDeleteAccountPopupState;
+            set 
+            {
+                _confirmDeleteAccountPopupState = value;
+                OnPropertyChanged("ConfirmDeleteAccountPopupState");
+            } 
+        }
 
         private RelayCommand _openDeleteAccountPopupCommand;
         public RelayCommand OpenDeleteAccountPopupCommand =>
             _openDeleteAccountPopupCommand ??= new RelayCommand(o =>
             {
                 ConfirmDeleteAccountPopupState = true;
-                OnPropertyChanged("ConfirmDeleteAccountPopupState");
             });
 
         private RelayCommand _confirmDeleteAccountCommand;
@@ -73,7 +104,37 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             _cancelDeleteAccountCommand ??= new RelayCommand(o =>
             {
                 ConfirmDeleteAccountPopupState = false;
-                OnPropertyChanged("ConfirmDeleteAccountPopupState");
+            });
+        #endregion
+
+        #region info popup
+        private bool _messagePopupState;
+        public bool MessagePopupState
+        {
+            get => _messagePopupState;
+            set
+            {
+                _messagePopupState = value;
+                OnPropertyChanged("MessagePopupState");
+            }
+        }
+
+        private string _messagePopupText;
+        public string MessagePopupText
+        {
+            get => _messagePopupText;
+            set
+            {
+                _messagePopupText = value;
+                OnPropertyChanged("MessagePopupText");
+            }
+        }
+
+        private RelayCommand _closePopupCommand;
+        public RelayCommand ClosePopupCommand =>
+            _closePopupCommand ??= new RelayCommand(o =>
+            {
+                MessagePopupState = false;
             });
         #endregion
 
@@ -83,5 +144,6 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             {
                 _mediator.Notify(this, "exit");
             });
+
     }
 }
