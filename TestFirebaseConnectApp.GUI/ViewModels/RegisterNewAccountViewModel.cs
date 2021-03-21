@@ -14,17 +14,17 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
         public RelayCommand RegisterNewAccountCommand =>
             _registerNewAccountCommand ??= new RelayCommand(async o => 
             {
-                (var email, var password, var confirmPassword) = (ValueTuple<string, string, string>)o;
+                var uii = (UserInputInfo)o;
 
                 var errorText = string.Empty;
-                if(!EmailValidator.Validate(email, ref errorText))
+                if(!EmailValidator.Validate(uii.Email, ref errorText))
                 {
                     ErrorMessageText = errorText;
                     ErrorMessagePopupState = true;
                     return;
                 }
 
-                if(!PasswordValidator.Validate(password, confirmPassword, ref errorText))
+                if(!PasswordValidator.Validate(uii.Password, uii.ConfirmPassword, ref errorText))
                 {
                     ErrorMessageText = errorText;
                     ErrorMessagePopupState = true;
@@ -33,7 +33,7 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
 
                 try
                 {
-                    var auth = await _authProvider.CreateUserWithEmailAndPasswordAsync(email, password);
+                    var auth = await _authProvider.CreateUserWithEmailAndPasswordAsync(uii.Email, uii.Password);
                     _mediator.FirebaseAuth = auth;
                     _mediator.Notify(this, "register");
                 }
