@@ -64,14 +64,14 @@
                     <Setter Property="Foreground" Value="DarkRed"/>
                 </Style>
             </StackPanel.Resources>
-            <Button Content="Сменить пароль" Command="{Binding Path=ChangePasswordCommand}"/>
+            <Button Content="Сменить пароль" Command="{Binding Path=OpenChangePasswordPopupCommand}"/>
             <Button Content="Выйти" Command="{Binding Path=ExitFromAccountCommand}"/>
-            <Button Content="Удалить аккаунт" Command="{Binding Path=DeleteAccountCommand}"
+            <Button Content="Удалить аккаунт" Command="{Binding Path=OpenDeleteAccountPopupCommand}"
                     Style="{StaticResource DangerButton}"/>
         </StackPanel>
 
         <!-- change password popup -->
-        <Popup IsOpen="{Binding Path=ChangePasswordPopupState}" Placement="Center" StaysOpen="False">
+        <Popup IsOpen="{Binding Path=ChangePasswordPopupState}" Placement="Center">
             <Border Padding="10" Background="White" BorderThickness="1" BorderBrush="Gray">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -120,14 +120,17 @@
                     <Label Grid.Row="2" Grid.ColumnSpan="2" Content="Подтвердите пароль"/>
                     <PasswordBox global:PasswordBoxExtension.BindPassword="True" Grid.Row="2" Grid.ColumnSpan="2"/>
 
-                    <Button Grid.Row="3" Grid.Column="0" Margin="0,0,5,0" Content="Подтвердить"/>
-                    <Button Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Content="Отмена"/>
+                    <Button Grid.Row="3" Grid.Column="0" Margin="0,0,5,0" Content="Подтвердить"
+                            Command="{Binding Path=ConfirmChangePasswordCommand}"
+                            CommandParameter="{Binding ElementName=PasswordBox, Path=(global:PasswordBoxExtension.ExtractedPassword)}"/>
+                    <Button Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Content="Отмена"
+                            Command="{Binding Path=CancelChangePasswordCommand}"/>
                 </Grid>
             </Border>
         </Popup>
         
         <!-- confirm delete account popup -->
-        <Popup IsOpen="{Binding Path=ConfirmDeleteAccountPopupState}" Placement="Center" StaysOpen="False">
+        <Popup IsOpen="{Binding Path=ConfirmDeleteAccountPopupState}" Placement="Center">
             <Border Padding="10" Background="White" BorderThickness="1" BorderBrush="Gray"
                 Grid.ColumnSpan="2" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Grid>
@@ -140,10 +143,15 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Вы действительно хотите удалить аккаунт?"
-                           Margin="0,0,0,5"/>
-                    <Button Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" Content="Подтвердить"/>
-                    <Button Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" Content="Отмена"/>
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,5">
+                        <Run Text="Вы действительно хотите удалить аккаунт?"/>
+                        <LineBreak/>
+                        <Run Text="Это действие нельзя отменить."/>
+                    </TextBlock>
+                    <Button Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" Content="Подтвердить"
+                            Command="{Binding Path=ConfirmDeleteAccountCommand}"/>
+                    <Button Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" Content="Отмена"
+                            Command="{Binding Path=CancelDeleteAccountCommand}"/>
                 </Grid>
             </Border>
         </Popup>
