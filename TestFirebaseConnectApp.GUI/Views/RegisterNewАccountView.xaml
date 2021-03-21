@@ -24,12 +24,14 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Image Grid.Row="0" Height="128" Source="pack://application:,,,/Resources/FirebaseLogo.png"/>
+            <Image Grid.Row="0" Height="128" 
+                   Source="pack://application:,,,/Resources/FirebaseLogo.png"/>
             <TextBlock Grid.Row="1" Margin="0,10" HorizontalAlignment="Center"
                        Text="Регистрация нового пользователя"/>
         </Grid>
 
-        <Grid Grid.Row="1" Width="200" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <Grid Grid.Row="1" Width="200" 
+              HorizontalAlignment="Center" VerticalAlignment="Top">
             <!-- regisration's form -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
