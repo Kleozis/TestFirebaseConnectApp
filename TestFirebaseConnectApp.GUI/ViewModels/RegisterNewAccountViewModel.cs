@@ -14,11 +14,41 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
         public RelayCommand RegisterNewAccountCommand =>
             _registerNewAccountCommand ??= new RelayCommand(async o => 
             {
-                (string email, string password) = (ValueTuple<string, string>)o;
-                var auth = await _authProvider.CreateUserWithEmailAndPasswordAsync(email, password);
+                (var email, var password, var confirmPassword) = (ValueTuple<string, string, string>)o;
 
-                _mediator.FirebaseAuth = auth;
-                _mediator.Notify(this, "register");
+                var errorText = string.Empty;
+                if(!EmailValidator.Validate(email, ref errorText))
+                {
+                    ErrorMessageText = errorText;
+                    ErrorMessagePopupState = true;
+                    return;
+                }
+
+                if(!PasswordValidator.Validate(password, confirmPassword, ref errorText))
+                {
+                    ErrorMessageText = errorText;
+                    ErrorMessagePopupState = true;
+                    return;
+                }
+
+                try
+                {
+                    var auth = await _authProvider.CreateUserWithEmailAndPasswordAsync(email, password);
+                    _mediator.FirebaseAuth = auth;
+                    _mediator.Notify(this, "register");
+                }
+                catch (FirebaseAuthException fae) when (fae.Reason == AuthErrorReason.WeakPassword)
+                {
+
+                    ErrorMessageText = "Пароль слишком короткий.";
+                    ErrorMessagePopupState = true;
+                }
+                catch (FirebaseAuthException fae) when (fae.Reason == AuthErrorReason.EmailExists)
+                {
+                    ErrorMessageText = "Пользователь с такой почтой уже зарегистрирован.";
+                    ErrorMessagePopupState = true;
+                }
+
             });
 
 
@@ -28,5 +58,37 @@ namespace TestFirebaseConnectApp.GUI.ViewModels
             {
                 _mediator.Notify(this, "goLogin");
             });
+
+        #region error popup
+        private bool _errorMessagePopupState;
+        public bool ErrorMessagePopupState 
+        {
+            get => _errorMessagePopupState;
+            set 
+            {
+                _errorMessagePopupState = value;
+                OnPropertyChanged("ErrorMessagePopupState");
+            } 
+        }
+
+        private string _errorMessageText;
+        public string ErrorMessageText 
+        { 
+            get => _errorMessageText;
+            set
+            {
+                _errorMessageText = value;
+                OnPropertyChanged("ErrorMessageText");
+            }
+        }
+
+        private RelayCommand _closeErrorPopupCommand;
+        public RelayCommand CloseErrorPopupCommand =>
+            _closeErrorPopupCommand ??= new RelayCommand(o => 
+            {
+                ErrorMessagePopupState = false;
+                OnPropertyChanged("ErrorMessagePopupState");
+            });
+        #endregion
     }
 }

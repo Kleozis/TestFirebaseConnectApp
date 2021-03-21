@@ -11,13 +11,13 @@
     <UserControl.Resources>
         <global:RegisterDataUserConverter x:Key="RegisterDataUserConverter"/>
     </UserControl.Resources>
-    <Grid VerticalAlignment="Center">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         
-        <Grid Grid.Row="0"> 
+        <Grid Grid.Row="0" VerticalAlignment="Bottom"> 
             <!-- logo -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -28,7 +28,7 @@
                        Text="Регистрация нового пользователя"/>
         </Grid>
 
-        <Grid Grid.Row="1" Width="200" HorizontalAlignment="Center">
+        <Grid Grid.Row="1" Width="200" HorizontalAlignment="Center" VerticalAlignment="Top">
             <!-- regisration's form -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
@@ -78,13 +78,14 @@
             <PasswordBox x:Name="PasswordBox" global:PasswordBoxExtension.BindPassword="True" Grid.Row="1"/>
 
             <Label Grid.Row="2" Content="Подтвердите пароль"/>
-            <PasswordBox global:PasswordBoxExtension.BindPassword="True" Grid.Row="2"/>
+            <PasswordBox x:Name="ConfirmPasswordBox" global:PasswordBoxExtension.BindPassword="True" Grid.Row="2"/>
 
             <Button Grid.Row="3" Content="Зарегистрироваться" Command="{Binding Path=RegisterNewAccountCommand}">
                 <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource RegisterDataUserConverter}">
                         <Binding ElementName="LoginTextBox" Path="Text"/>
                         <Binding ElementName="PasswordBox" Path="(global:PasswordBoxExtension.ExtractedPassword)"/>
+                        <Binding ElementName="ConfirmPasswordBox" Path="(global:PasswordBoxExtension.ExtractedPassword)"/>
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
@@ -96,5 +97,28 @@
                 </Hyperlink>
             </TextBlock>
         </Grid>
+
+        <!-- error validation popup -->
+        <Popup Placement="Center" StaysOpen="False" Grid.RowSpan="2"
+               IsOpen="{Binding Path=ErrorMessagePopupState}">
+            <Border Padding="5" Background="White" BorderBrush="Gray" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="3" 
+                               Text="{Binding Path=ErrorMessageText}"/>
+                    <Button Grid.Row="1" Grid.Column="1" 
+                            Content="Закрыть"
+                            Command="{Binding Path=CloseErrorPopupCommand}"/>
+                </Grid>                              
+            </Border>
+        </Popup>
     </Grid>
 </UserControl>
